@@ -134,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 if(lastDonationDate.getText().toString().equals("")){
                     lastDonationDate.setText("01/01/2022");
                 }else{
-                    if(lastDonationDate.getText().toString().length()!=10 || )
+                    //if(lastDonationDate.getText().toString().length()!=10)
                 }
 
                 if(weight.getText().toString().equals("")){
@@ -237,9 +237,9 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
-    private boolean isValidStudentID(String studentID){
-        if(studentID.length() == 6){
-            database
-        }
-    }
+//    private boolean isValidStudentID(String studentID){
+//        if(studentID.length() == 6){
+//            database
+//        }
+//    }
 }

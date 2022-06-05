@@ -86,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             lastDonationDate.setText(user.getLastDonationDate());
             weight.setText(additionalInfo.getWeight()+"");
             heightfit.setText(additionalInfo.getHeightFit());
-            heightfit.setText(additionalInfo.getHeightInch());
+            heightInch.setText(additionalInfo.getHeightInch());
             curAddress.setText(additionalInfo.getCurrentAddress());
             parAddress.setText(additionalInfo.getParmanentAddress());
             registor.setText("Update");

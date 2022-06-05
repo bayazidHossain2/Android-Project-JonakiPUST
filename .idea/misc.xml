@@ -5,11 +5,13 @@
       <map>
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/drawable/bg_button.xml" value="0.25833333333333336" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/drawable/bg_edit_text.xml" value="0.25833333333333336" />
+        <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/drawable/bg_four_side_round.xml" value="0.25833333333333336" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/drawable/bg_three_side_round.xml" value="0.25833333333333336" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/drawable/bg_two_side_round.xml" value="0.22" />
+        <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/drawable/bg_two_side_round_top.xml" value="0.25833333333333336" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/layout/activity_doner_info.xml" value="0.2421875" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/layout/activity_doner_info2.xml" value="0.2421875" />
-        <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/layout/activity_login.xml" value="0.21920289855072464" />
+        <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/layout/activity_login.xml" value="0.2" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/layout/activity_main.xml" value="0.2421875" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/layout/activity_register.xml" value="0.24258760107816713" />
         <entry key="..\:/Android dev/Apps/JonakiPUST/app/src/main/res/layout/castom_toolbar.xml" value="0.121875" />

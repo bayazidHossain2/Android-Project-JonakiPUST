@@ -202,6 +202,47 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Security Code : "
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/bg_normal"
+                    android:padding="8dp"/>
+
+                <EditText
+                    android:id="@+id/et_register_security_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:hint="Get security from jonaki admin."
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/light_black"
+                    android:background="@drawable/bg_edit_text"
+                    android:padding="8dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Additional Info : "
+                android:textSize="16sp"
+                android:textColor="@color/bg_light"
+                android:background="@color/ygreen_normal"
+                android:padding="8dp"
+                android:layout_marginTop="36dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Number Of Donation : "
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -254,21 +295,11 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Additional Info : "
-                android:textSize="16sp"
-                android:textColor="@color/bg_light"
-                android:background="@color/ygreen_normal"
-                android:padding="8dp"
-                android:layout_marginTop="36dp"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
                 android:orientation="horizontal">
 
@@ -349,6 +380,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:hint="5"
                     android:textColor="@color/black"
                     android:textColorHint="@color/light_black"
                     android:inputType="number"
@@ -366,6 +398,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:hint="4"
                     android:textColor="@color/black"
                     android:textColorHint="@color/light_black"
                     android:inputType="number"

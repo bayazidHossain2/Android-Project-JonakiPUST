@@ -2,14 +2,17 @@ package com.example.jonakipust;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,11 +20,9 @@ import android.widget.Toast;
 import com.example.jonakipust.Database.FirebaseHelper;
 import com.example.jonakipust.Database.MainDBHelper;
 import com.example.jonakipust.Model.LoginInfo;
-import com.example.jonakipust.Model.UserAdditionalInfo;
 import com.example.jonakipust.Model.UserModel;
 import com.example.jonakipust.Model.UserSelf;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -33,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     Spinner bloodGroupSpi;
     Button registor;
     String sBloodGroup,uid;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,19 +78,19 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         uid = getIntent().getStringExtra("uid");
         if(!uid.equals("")){
             UserModel user = dbHelper.getUserByUID(uid);
-            UserAdditionalInfo additionalInfo = dbHelper.getUserAdditionalInfoByUID(uid);
-            studentID.setText(additionalInfo.getStudentId()+"");
+            studentID.setText(user.getStudentId()+"");
             password.setText(getSharedPreferences("Login",MODE_PRIVATE).getString("Psw",""));
-            profileURL.setText(user.getProfile());
+            String[] purl = user.getProfile().split("=");
+            profileURL.setText("https://drive.google.com/file/d/" + purl[2] + "/view?usp=sharing");
             name.setText(user.getName());
             phone.setText(user.getPhone());
             numberOfDonation.setText(user.getNumberOfDonation()+"");
             lastDonationDate.setText(user.getLastDonationDate());
-            weight.setText(additionalInfo.getWeight()+"");
-            heightfit.setText(additionalInfo.getHeightFit());
-            heightInch.setText(additionalInfo.getHeightInch());
-            curAddress.setText(additionalInfo.getCurrentAddress());
-            parAddress.setText(additionalInfo.getParmanentAddress());
+            weight.setText(user.getWeight()+"");
+            heightfit.setText(user.getHeightFit());
+            heightInch.setText(user.getHeightInch());
+            curAddress.setText(user.getCurrentAddress());
+            parAddress.setText(user.getParmanentAddress());
             registor.setText("Update");
             this.sBloodGroup = user.getBloodGroup();
         }
@@ -96,19 +98,24 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view) {
                 if(studentID.getText().toString().length()!=6){
-                    Toast.makeText(RegisterActivity.this, "Invalid Student ID.", Toast.LENGTH_SHORT).show();
+                    helpMessage.setText("Invalid Student ID.");
+                    //Toast.makeText(RegisterActivity.this, "Invalid Student ID.", Toast.LENGTH_SHORT).show();
                     return;
                 }else if(password.getText().toString().length()<6){
-                    Toast.makeText(RegisterActivity.this, "Password must >= 6 character.", Toast.LENGTH_SHORT).show();
+                    helpMessage.setText("Password must >= 6 character.");
+                    //Toast.makeText(RegisterActivity.this, "Password must >= 6 character.", Toast.LENGTH_SHORT).show();
                     return;
                 }else if(name.getText().toString().isEmpty()){
-                    Toast.makeText(RegisterActivity.this, "Name not found.", Toast.LENGTH_SHORT).show();
+                    helpMessage.setText("Name not found.");
+                    //Toast.makeText(RegisterActivity.this, "Name not found.", Toast.LENGTH_SHORT).show();
                     return;
                 }else if(sBloodGroup.equals("")){
-                    Toast.makeText(RegisterActivity.this, "Blood group not selected.", Toast.LENGTH_SHORT).show();
+                    helpMessage.setText("Blood group not selected.");
+                    //Toast.makeText(RegisterActivity.this, "Blood group not selected.", Toast.LENGTH_SHORT).show();
                     return;
                 }else if(phone.getText().toString().length()!=11||!phone.getText().toString().startsWith("01")){
-                    Toast.makeText(RegisterActivity.this, "Invalid Phone number.", Toast.LENGTH_SHORT).show();
+                    helpMessage.setText("Invalid Phone number.");
+                    //Toast.makeText(RegisterActivity.this, "Invalid Phone number.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(!profileURL.getText().toString().isEmpty()){
@@ -121,13 +128,13 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                         Toast.makeText(RegisterActivity.this, "Invalid Image URL.", Toast.LENGTH_SHORT).show();
                     }
                 }else{
-                    profileURL.setText("https://drive.google.com/uc?export=view&id=/default");
+                    profileURL.setText("https://drive.google.com/uc?export=view&id=default");
                 }
                 if(!FirebaseHelper.isConnected(RegisterActivity.this)){
                     helpMessage.setText("You are not online. Try again");
                     return;
                 }
-                if(dbHelper.getLoginInfo(studentID.getText().toString())!=null){
+                if(dbHelper.getLoginInfo(studentID.getText().toString())!=null && uid.equals("")){
                     helpMessage.setText("This student registered before.");
                     return;
                 }
@@ -148,26 +155,32 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 }
 
                 if(uid.equals("")){
-                    uid = String.valueOf(new Date().getTime());
+                    uid = String.valueOf(Long.MAX_VALUE-new Date().getTime());
                 }else{
                     dbHelper.deleteUser(uid);
-                    dbHelper.deleteAdditionalInfo(uid);
+                    Toast.makeText(RegisterActivity.this, "Deleted previous information.    ", Toast.LENGTH_SHORT).show();
+                    try {
+                        Thread.sleep(2000);
+                        //Toast.makeText(RegisterActivity.this, "Sleep finished", Toast.LENGTH_SHORT).show();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                UserModel user = new UserModel(uid,profileURL.getText().toString(),name.getText().toString(),
-                        sBloodGroup,lastDonationDate.getText().toString(),Integer.parseInt(numberOfDonation.
-                        getText().toString()),phone.getText().toString());
-                boolean parSuccess =  dbHelper.insertUser(user,false);
 
                 int height = Integer.parseInt(heightfit.getText().toString())*12+Integer.parseInt(heightInch.getText().toString());
-                UserAdditionalInfo userAddInfo = new UserAdditionalInfo(uid,Float.parseFloat(weight.getText().toString()),height,
-                        Integer.parseInt(studentID.getText().toString()),curAddress.getText().toString(),parAddress.getText().toString(),
-                        new StringBuilder());
-                boolean addSuccess = dbHelper.insertAdditionalInfo(userAddInfo,false);
 
-                LoginInfo loginInfo = new LoginInfo(userAddInfo.getStudentId()+"",password.getText().toString(),user.getUid());
+                UserModel user = new UserModel(uid,profileURL.getText().toString(),name.getText().toString(),
+                        sBloodGroup,lastDonationDate.getText().toString(),Integer.parseInt(numberOfDonation.
+                        getText().toString()),phone.getText().toString(),"Never",Float.parseFloat(weight.getText().toString()),
+                        height,Integer.parseInt(studentID.getText().toString()),curAddress.getText().toString(),
+                        parAddress.getText().toString(),new StringBuilder());
+
+                boolean parSuccess =  dbHelper.insertUser(user,false);
+
+                LoginInfo loginInfo = new LoginInfo(user.getStudentId()+"",password.getText().toString(),user.getUid());
                 dbHelper.insertLoginInfo(loginInfo,false);
 
-                if(parSuccess&&addSuccess){
+                if(parSuccess){
                     Toast.makeText(RegisterActivity.this, "Data insert success.", Toast.LENGTH_SHORT).show();
 
                     SharedPreferences sp = getSharedPreferences("Login",MODE_PRIVATE);
@@ -176,18 +189,23 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                     editor.putString("Psw",password.getText().toString());
                     editor.commit();
 
-                    UserSelf mySelf = UserSelf.getUserSelf(user,userAddInfo);
+                    UserSelf mySelf = UserSelf.getUserSelf(user);
                     //FirebaseHelper.register(user,userAddInfo,password.getText().toString());
-                    try {
-                        Thread.sleep(3000);
-                        Toast.makeText(RegisterActivity.this, "Sleep finished", Toast.LENGTH_SHORT).show();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(RegisterActivity.this, "Start Activity", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    progressDialog = new ProgressDialog(RegisterActivity.this);
+                    progressDialog.setTitle("Register");
+                    progressDialog.setMessage("Wait few moment to Register.");
+                    progressDialog.show();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            //your code here
+                            Toast.makeText(RegisterActivity.this, "Register success.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(RegisterActivity.this,MainActivity.class);
+                            startActivity(intent);
+                            progressDialog.dismiss();
+                            finish();
+                        }
+                    }, 5000);
                 }else{
                     Toast.makeText(RegisterActivity.this, "Data insert Fail.", Toast.LENGTH_SHORT).show();
                 }
@@ -237,9 +255,4 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
-//    private boolean isValidStudentID(String studentID){
-//        if(studentID.length() == 6){
-//            database
-//        }
-//    }
 }

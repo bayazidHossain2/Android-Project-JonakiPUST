@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -22,12 +24,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jonakipust.Adapters.HistoryAdapter;
+import com.example.jonakipust.CreateHistoryActivity;
+import com.example.jonakipust.Database.MainDBHelper;
 import com.example.jonakipust.MainActivity;
+import com.example.jonakipust.Model.DonationHistory.DonationHistoryModel;
 import com.example.jonakipust.Model.UserSelf;
 import com.example.jonakipust.R;
 import com.example.jonakipust.RegisterActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -36,10 +44,10 @@ public class UserFragment extends Fragment {
     CircleImageView userProfile;
     FloatingActionButton profileEdit;
     TextView bloodGroup,lastDonationDate,userName,numberOfDonation,phoneNumber;
-    ImageButton call;
-    TextView userBMI,userWeight,userHeight,userStudentID,curAddress,parAddress;
+    TextView userBMI,userWeight,userHeight,userStudentID,curAddress,parAddress,addHistory;
     RecyclerView userDonationHistory;
     UserSelf mySelf;
+    ArrayList<DonationHistoryModel> historyList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +71,6 @@ public class UserFragment extends Fragment {
         userName = view.findViewById(R.id.tv_user_name);
         numberOfDonation = view.findViewById(R.id.tv_user_number_of_donation);
         phoneNumber = view.findViewById(R.id.tv_user_phone);
-        call = view.findViewById(R.id.btn_call_user);
         userBMI = view.findViewById(R.id.tv_user_bmi);
         userWeight = view.findViewById(R.id.tv_user_weight);
         userHeight = view.findViewById(R.id.tv_user_height);
@@ -71,6 +78,7 @@ public class UserFragment extends Fragment {
         curAddress = view.findViewById(R.id.tv_user_current_address);
         parAddress = view.findViewById(R.id.tv_user_parmanent_address);
         userDonationHistory = view.findViewById(R.id.rv_user_donation_history);
+        addHistory = view.findViewById(R.id.tv_user_add_donation_history);
         mySelf = UserSelf.getUserSelf();
 
         Picasso.get().load(mySelf.getUserModel().getProfile()).placeholder(R.drawable.ic_user).into(userProfile);
@@ -88,7 +96,7 @@ public class UserFragment extends Fragment {
         profileEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Edit profile clicked", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(view.getContext(), "Edit profile clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(view.getContext(), RegisterActivity.class);
                 intent.putExtra("uid",UserSelf.getUserSelf().getUserModel().getUid());
                 startActivity(intent);
@@ -99,24 +107,30 @@ public class UserFragment extends Fragment {
         userName.setText(mySelf.getUserModel().getName());
         numberOfDonation.setText(mySelf.getUserModel().getNumberOfDonation()+" times");
         phoneNumber.setText(mySelf.getUserModel().getPhone());
-        call.setOnClickListener(new View.OnClickListener() {
+        userBMI.setText(mySelf.getUserModel().getBmi());
+        userWeight.setText(mySelf.getUserModel().getWeight()+" KG");
+        userHeight.setText(mySelf.getUserModel().getHeightString());
+        userStudentID.setText(mySelf.getUserModel().getStudentId()+"");
+        curAddress.setText(mySelf.getUserModel().getCurrentAddress());
+        parAddress.setText(mySelf.getUserModel().getParmanentAddress());
+        addHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Calling : "+phoneNumber.getText().toString(), Toast.LENGTH_SHORT).show();
-                if(ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions((Activity) view.getContext(), new String[]{Manifest.permission.CALL_PHONE},
-                            Activity.RESULT_FIRST_USER);
-                }else{
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+phoneNumber.getText().toString()));
-                    startActivity(intent);
-                }
+                Toast.makeText(view.getContext(),"Add history clicked.",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(view.getContext(), CreateHistoryActivity.class);
+                startActivity(intent);
             }
         });
-        userBMI.setText(mySelf.getUserAdditionalInfo().getBmi());
-        userWeight.setText(mySelf.getUserAdditionalInfo().getWeight()+" KG");
-        userHeight.setText(mySelf.getUserAdditionalInfo().getHeightString());
-        userStudentID.setText(mySelf.getUserAdditionalInfo().getStudentId()+"");
-        curAddress.setText(mySelf.getUserAdditionalInfo().getCurrentAddress());
-        parAddress.setText(mySelf.getUserAdditionalInfo().getParmanentAddress());
+        MainDBHelper dbHelper = new MainDBHelper(view.getContext());
+
+        userDonationHistory = view.findViewById(R.id.rv_user_donation_history);
+        historyList = dbHelper.getDonationHistoryList(UserSelf.getUserSelf().getUserModel().getUid());
+        if(historyList == null){
+            historyList = new ArrayList<>();
+        }
+        HistoryAdapter historyAdapter = new HistoryAdapter(view.getContext(),historyList);
+        userDonationHistory.setAdapter(historyAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        userDonationHistory.setLayoutManager(layoutManager);
     }
 }

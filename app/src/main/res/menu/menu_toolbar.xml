@@ -5,8 +5,14 @@
         android:id="@+id/menu_about"
         android:title="About" />
     <item
-        android:id="@+id/menu_help"
-        android:title="Help"/>
+        android:id="@+id/post_load"
+        android:title="Load Post"/>
+    <item
+        android:id="@+id/menu_load_donation"
+        android:title="Load Donation History"/>
+    <item
+        android:id="@+id/menu_reset"
+        android:title="Reset all data"/>
     <item
         android:id="@+id/menu_logout"
         android:title="Logout" />

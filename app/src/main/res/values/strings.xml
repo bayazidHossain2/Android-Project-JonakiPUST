@@ -8,6 +8,7 @@
     <string name="action_settings">Settings</string>
     <string name="jonaki">জোনাকি</string>
     <string name="jonaki_slogan">মানবাতা যেখানে অবহেলিত জোনাকিরা সেখানে উদ্ভাসিত।</string>
+    <string name="try_login">Trying to login.</string>
     <string-array name="blood_group">
         <item>Select</item>
         <item>A+</item>

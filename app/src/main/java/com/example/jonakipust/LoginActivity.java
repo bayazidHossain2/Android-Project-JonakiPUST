@@ -2,11 +2,15 @@ package com.example.jonakipust;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.jonakipust.R.string.try_login;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,26 +21,25 @@ import android.widget.Toast;
 import com.example.jonakipust.Database.FirebaseHelper;
 import com.example.jonakipust.Database.MainDBHelper;
 import com.example.jonakipust.Model.LoginInfo;
-import com.example.jonakipust.Model.Threads.ActavitionChecker;
-import com.example.jonakipust.Model.UserAdditionalInfo;
 import com.example.jonakipust.Model.UserModel;
 import com.example.jonakipust.Model.UserSelf;
 
-import java.util.ArrayList;
-
 public class LoginActivity extends AppCompatActivity {
 
-    EditText studentiD, password;
+    EditText studentiD, password,security;
     TextView register,helpMessage;
     Button loginBTN;
     MainDBHelper dbHelper;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        FirebaseHelper.loadLoginInfo(LoginActivity.this);
-        FirebaseHelper.downloadAllData(LoginActivity.this);
+        FirebaseHelper.loadUserInfo(LoginActivity.this);
+
+        //FirebaseHelper.reset(LoginActivity.this, false);
+        //FirebaseHelper.downloadAllData(LoginActivity.this);
 
         //ActavitionChecker.getInstance().start();
         SharedPreferences sp = getSharedPreferences("Login",MODE_PRIVATE);
@@ -45,26 +48,38 @@ public class LoginActivity extends AppCompatActivity {
             MainDBHelper helper = new MainDBHelper(LoginActivity.this);
 
             UserModel userModel = helper.getUserByUID(uid);
-
+            Log.d(TAG,"You are in share preference.*******************");
+            //sp = null;
             if(userModel != null){
-                UserSelf userSelf = UserSelf.getUserSelf(userModel,helper.getUserAdditionalInfoByUID(userModel.getUid()));
+                UserSelf userSelf = UserSelf.getUserSelf(userModel);
                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(intent);
                 finish();
             }else{
                 Log.d(TAG,"ID not found.");
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("uid",null);
+                editor.putString("Psw",null);
+                editor.commit();
+
+                Intent intentL = new Intent(LoginActivity.this,LoginActivity.class);
+                startActivity(intentL);
+                LoginActivity.this.finish();
             }
 
         }else {
+            FirebaseHelper.loadLoginInfo(LoginActivity.this);
+            FirebaseHelper.getSecurityCode("Login");
             dbHelper = new MainDBHelper(LoginActivity.this);
 
             studentiD = findViewById(R.id.et_login_student_id);
-            studentiD.setText("190140");
+            //studentiD.setText("190140");
             password = findViewById(R.id.et_login_password);
-            password.setText("mysupersafe");
+            //password.setText("mysupersafe");
             register = findViewById(R.id.tv_register_first);
             helpMessage = findViewById(R.id.tv_login_help_message);
             loginBTN = findViewById(R.id.btn_login);
+            security = findViewById(R.id.et_login_security_code);
 
             register.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,7 +95,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(LoginActivity.this,"login clicked",Toast.LENGTH_SHORT).show();
-                    Log.d(TAG,"login clicked.");
+                    //Log.d(TAG,"login clicked.");
+
                     if(!FirebaseHelper.isConnected(LoginActivity.this)){
                         helpMessage.setText("Your are not online. Check your connection and try again.");
                         return;
@@ -96,42 +112,54 @@ public class LoginActivity extends AppCompatActivity {
                             return;
                         }
                         if(password.getText().toString().equals(loginInfo.getPassword())){
-                            Toast.makeText(LoginActivity.this, "Login success", Toast.LENGTH_LONG).show();
-                            Log.d(TAG,"valid id ----------------- : "+loginInfo.getUID());
-
-                            int time=0;
-                            while(!FirebaseHelper.alldownloaded && time <= 3) {
-                                try {
-                                    Thread.sleep(3000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }time++;
-                            }
-                            if(!FirebaseHelper.alldownloaded){
-                                helpMessage.setText("Wait few  moments and try again.");
+                            if(FirebaseHelper.securityCode == null){
+                                helpMessage.setText("Wait for download security code.");
                                 return;
                             }
+                            String secq = "L"+security.getText().toString();
+                            if(!FirebaseHelper.securityCode.equals(secq)){
+                                helpMessage.setText("Invalid code.Get right code from jonaki admin.");
+                                return;
+                            }
+                            //Toast.makeText(LoginActivity.this, "Login success", Toast.LENGTH_LONG).show();
+                            Log.d(TAG,"valid id ----------------- : "+loginInfo.getUID());
+                            progressDialog = new ProgressDialog(LoginActivity.this);
+                            progressDialog.setTitle("Login");
+                            progressDialog.setMessage("Wait few moment to load data.");
+                            progressDialog.show();
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    //your code here
+                                    if(!FirebaseHelper.alldownloaded){
+                                        helpMessage.setText("Wait few  moments and try again.");
+                                        progressDialog.dismiss();
+                                    }else {
+                                        UserModel user = dbHelper.getUserByUID(loginInfo.getUID());
 
-                            UserModel user = dbHelper.getUserByUID(loginInfo.getUID());
-                            UserAdditionalInfo userAddInfo = dbHelper.getUserAdditionalInfoByUID(loginInfo.getUID());
+                                        SharedPreferences sp = getSharedPreferences("Login", MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        editor.putString("uid", user.getUid());
+                                        editor.putString("Psw", password.getText().toString());
+                                        editor.commit();
 
-                            SharedPreferences sp = getSharedPreferences("Login",MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("uid",user.getUid());
-                            editor.putString("Psw",password.getText().toString());
-                            editor.commit();
+                                        UserSelf mySelf = UserSelf.getUserSelf(user);
 
-                            UserSelf mySelf = UserSelf.getUserSelf(user,userAddInfo);
-
-                            Toast.makeText(LoginActivity.this, "Start Activity", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                                        Toast.makeText(LoginActivity.this, "Start Activity", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        progressDialog.dismiss();
+                                        finish();
+                                    }
+                                }
+                            }, 5000);
                         }else{
                             Log.d(TAG,"not match : "+loginInfo.getPassword()+" "+loginInfo.getStudentID()+
-                                    " and "+studentiD.getText().toString());
+                                    " and "+studentiD.getText().toString()+" and p :"+password.getText().toString());
+
+                            helpMessage.setText("Invalid ID or password.");
                         }
-                        helpMessage.setText("Invalid ID or password.");
+
                     }else{
                         helpMessage.setText("Waite for download data");
                     }

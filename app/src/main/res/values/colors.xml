@@ -20,4 +20,10 @@
     <color name="red_normal">#FF0000</color>
     <color name="blue">#56A6E3</color>
     <color name="background">#ECE2E2</color>
+
+    <color name="green_extra_hard">#0D710D</color>
+    <color name="green_hard">#048c04</color>
+    <color name="green_medium">#62B503</color>
+    <color name="green_light">#abfb04</color>
+    <color name="button_color">#02C566</color>
 </resources>

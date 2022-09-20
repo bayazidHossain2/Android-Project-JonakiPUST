@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#36888888"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context=".DonerInfoActivity">
     <ScrollView
@@ -107,6 +107,33 @@
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
                     android:text="5 time"
+                    android:textColor="@color/bg_normal"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="Last Contact : "
+                    android:textColor="@color/bg_medium"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_doner_last_contact_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:text="Never"
                     android:textColor="@color/bg_normal"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -322,10 +349,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="20dp"
+                android:padding="8dp"
                 android:text="Donation History :"
                 android:textColor="@color/bg_normal"
+                android:background="@drawable/bg_four_side_round"
+                android:backgroundTint="@color/ygreen_light"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -333,7 +364,8 @@
                 android:id="@+id/rv_doner_donation_history"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="22dp" />
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp" />
 
         </LinearLayout>
     </ScrollView>

@@ -2,7 +2,6 @@ package com.example.jonakipust.Fragments.Nav_Fragment;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -27,9 +26,9 @@ import com.example.jonakipust.Database.FirebaseHelper;
 import com.example.jonakipust.Database.MainDBHelper;
 import com.example.jonakipust.Model.Post.Comment.CommentModel;
 import com.example.jonakipust.Model.Post.PostModel;
-import com.example.jonakipust.Model.UserAdditionalInfo;
 import com.example.jonakipust.Model.UserSelf;
 import com.example.jonakipust.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -89,7 +88,7 @@ public class PostFragment extends Fragment {
                         Toast.makeText(view.getContext(), "Write post first.", Toast.LENGTH_SHORT).show();
                     } else {
                         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-                        PostModel post = new PostModel(String.valueOf(new Date().getTime()),
+                        PostModel post = new PostModel(String.valueOf(Long.MAX_VALUE-new Date().getTime()),
                                 UserSelf.getUserSelf().getUserModel().getUid(),
                                 dateTimeFormatter.format(LocalDateTime.now()), sPost, 0, "");
                         boolean success = dbHelper.insertPost(post,false);
@@ -106,43 +105,7 @@ public class PostFragment extends Fragment {
                 }
             }
         });
-        myRef = firebaseDatabase.getReference().child("Datas").child("Post");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d(TAG,"Number of Post is : "+snapshot.getChildrenCount());
-                for(DataSnapshot ds : snapshot.getChildren()){
-                    PostModel postModel = ds.getValue(PostModel.class);
-                    dbHelper.insertPost(postModel,true);
-                    DatabaseReference cref = firebaseDatabase.getReference().child("Datas").child(
-                        "Comments").child(postModel.getUid());
-                    cref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Log.d(TAG,"Number of Comments is : "+snapshot.getChildrenCount());
-                            for(DataSnapshot ds : snapshot.getChildren()){
-                                CommentModel commentModel = ds.getValue(CommentModel.class);
-                                dbHelper.insertComment(commentModel,true);
-                            }
-                            Log.d(TAG,"All Comments download finished-----------------");
-                            //resetPosts();
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Log.d(TAG,"NOT found login info -----------------");
-                        }
-                    });
-                }
-                Log.d(TAG,"All post download finished-----------------");
-                //resetPosts();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG,"NOT found login info -----------------");
-            }
-        });
         postList = dbHelper.getPostList();
         if(postList == null){
             postList = new ArrayList<>();

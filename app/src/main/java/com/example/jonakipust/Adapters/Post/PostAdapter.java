@@ -66,7 +66,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder>{
         MainDBHelper dbHelper = new MainDBHelper(context);
         UserModel writer = dbHelper.getUserByUID(postModel.getPostWriterUID());
 
-        Picasso.get().load(UserSelf.getUserSelf().getUserModel().getProfile()).placeholder(R.drawable.ic_user).into(holder.post_writer_profile);
+        Picasso.get().load(writer.getProfile()).placeholder(R.drawable.
+                ic_user).into(holder.post_writer_profile);
         holder.post_writer_name.setText(writer.getName());
         holder.post_writer_name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder>{
         ArrayList<CommentModel> cList = new ArrayList<>();
         if(!postModel.getCommentUID().equals("")) {
             String[] commentUIDs = postModel.getCommentUID().split(" ");
+            Log.d(TAG, "Comment uids are : "+postModel.getCommentUID());
             int lastInd = commentUIDs.length - 1;
             for (; lastInd >= 0; lastInd--) {
                 CommentModel newComment = dbHelper.getCommentByUID(commentUIDs[lastInd].trim());
@@ -94,6 +96,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder>{
                 }
             }
         }
+        Log.d(TAG, "On comment "+postModel.getUid()+" adapter size is : "+cList.size());
 //        cList.add(new CommentModel("01","99","08/05/2022 12:43 pm",
 //                "Test Comment."));
 

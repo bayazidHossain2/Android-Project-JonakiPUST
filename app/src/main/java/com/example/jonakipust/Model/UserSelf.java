@@ -2,28 +2,22 @@ package com.example.jonakipust.Model;
 
 public class UserSelf {
     private final UserModel userModel;
-    private final UserAdditionalInfo userAdditionalInfo;
     private static UserSelf userSelf;
 
-    private UserSelf(UserModel userModel,UserAdditionalInfo userAdditionalInfo){
+    private UserSelf(UserModel userModel){
         this.userModel = userModel;
-        this.userAdditionalInfo = userAdditionalInfo;
     }
 
     public static UserSelf getUserSelf() {
         return userSelf;
     }
 
-    public static UserSelf getUserSelf(UserModel userModel,UserAdditionalInfo userAdditionalInfo) {
-        userSelf = new UserSelf(userModel,userAdditionalInfo);
+    public static UserSelf getUserSelf(UserModel userModel) {
+        userSelf = new UserSelf(userModel);
         return userSelf;
     }
 
     public UserModel getUserModel() {
         return userModel;
-    }
-
-    public UserAdditionalInfo getUserAdditionalInfo() {
-        return userAdditionalInfo;
     }
 }

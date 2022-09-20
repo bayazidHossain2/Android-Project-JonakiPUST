@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/bg_light"
+                    android:backgroundTint="@color/blue"
                     android:clickable="true"
                     android:src="@android:drawable/ic_menu_edit"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_cover_image"
@@ -156,17 +156,6 @@
                     android:text="01704233873"
                     android:textColor="@color/bg_normal"
                     android:textSize="16sp" />
-
-                <ImageButton
-                    android:id="@+id/btn_call_user"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_baseline_call_24"
-                    tools:ignore="SpeakableTextPresentCheck" />
 
             </LinearLayout>
 
@@ -335,22 +324,44 @@
 
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="20dp"
-                android:text="Donation History :"
-                android:textColor="@color/bg_normal"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:background="@drawable/bg_four_side_round"
+                android:backgroundTint="@color/ygreen_light">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="Donation History :"
+                    android:padding="8dp"
+                    android:layout_marginRight="8dp"
+                    android:textColor="@color/bg_normal"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_user_add_donation_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="+"
+                    android:gravity="center"
+                    android:textColor="@color/ygreen_normal"
+                    android:textSize="36sp"/>
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_user_donation_history"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="22dp" />
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"/>
 
         </LinearLayout>
     </ScrollView>

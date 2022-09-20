@@ -1,36 +1,41 @@
 package com.example.jonakipust.Database;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Context.MODE_PRIVATE;
 import static com.google.firebase.database.FirebaseDatabase.getInstance;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.nfc.Tag;
+import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
+import com.example.jonakipust.LoginActivity;
+import com.example.jonakipust.MainActivity;
 import com.example.jonakipust.Model.DonationHistory.DonationHistoryModel;
 import com.example.jonakipust.Model.LoginInfo;
 import com.example.jonakipust.Model.Post.Comment.CommentModel;
 import com.example.jonakipust.Model.Post.PostModel;
-import com.example.jonakipust.Model.UserAdditionalInfo;
 import com.example.jonakipust.Model.UserModel;
+import com.example.jonakipust.Model.UserShortModel;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Stack;
+import java.util.Collection;
+import java.util.Collections;
 
 public class MainDBHelper extends SQLiteOpenHelper {
 
     static final String NAME = "JonakiPustDB";
-    static final int VERSION = 9;
+    static final int VERSION = 23;
     Context context;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference myRef;
@@ -52,17 +57,12 @@ public class MainDBHelper extends SQLiteOpenHelper {
                         "bloodGroup text," +
                         "lastDonationDate text," +
                         "numberOfDonation int," +
-                        "phone text)"
-
-        );
-
-        sqLiteDatabase.execSQL(
-                "create table UserAdditionalInfo" +
-                        "(uid text primary key," +
-                        "weight float," +
-                        "height int," +
-                        "studentID int," +
-                        "curAddress text," +
+                        "phone text,"+
+                        "lastContuct text,"+
+                        "weight float,"+
+                        "height int,"+
+                        "studentID int,"+
+                        "curAddress text,"+
                         "parAddress text," +
                         "donationHistoryUID text)"
         );
@@ -99,23 +99,37 @@ public class MainDBHelper extends SQLiteOpenHelper {
                 "create table DonationHistory" +
                         "(uid text primary key," +
                         "donerUID text," +
-                        "postUID text," +
-                        "shortDesc text," +
-                        "online int)"
+                        "donationDate text," +
+                        "shortDesc text)"
         );
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
         sqLiteDatabase.execSQL("drop table if exists Users");
-        sqLiteDatabase.execSQL("drop table if exists UserAdditionalInfo");
-        sqLiteDatabase.execSQL("drop table if exists LoginInfo");
         sqLiteDatabase.execSQL("drop table if exists Posts");
+        sqLiteDatabase.execSQL("drop table if exists LoginInfo");
         sqLiteDatabase.execSQL("drop table if exists Comments");
         sqLiteDatabase.execSQL("drop table if exists DonationHistory");
 
         onCreate(sqLiteDatabase);
+    }
+
+    public void deleteAll(){
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+
+        sqLiteDatabase.execSQL("delete from Users");
+        sqLiteDatabase.execSQL("delete from LoginInfo");
+        sqLiteDatabase.execSQL("delete from Posts");
+        sqLiteDatabase.execSQL("delete from Comments");
+        sqLiteDatabase.execSQL("delete from DonationHistory");
+        SharedPreferences sp = context.getSharedPreferences("Login",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("uid",null);
+        editor.putString("Psw",null);
+        editor.commit();
     }
 
     public boolean insertUser(UserModel user,boolean isDownloaded){
@@ -129,7 +143,13 @@ public class MainDBHelper extends SQLiteOpenHelper {
         values.put("lastDonationDate",user.getLastDonationDate());
         values.put("numberOfDonation",user.getNumberOfDonation());
         values.put("phone",user.getPhone());
-
+        values.put("lastContuct",user.getLastContact());
+        values.put("weight",user.getWeight());
+        values.put("height",user.getHeight());
+        values.put("studentID",user.getStudentId());
+        values.put("curAddress",user.getCurrentAddress());
+        values.put("parAddress",user.getParmanentAddress());
+        values.put("donationHistoryUID",user.getDonationHistoryUID());
 
         database.delete("Users","uid="+user.getUid(),null);
 
@@ -158,32 +178,44 @@ public class MainDBHelper extends SQLiteOpenHelper {
         UserModel user;
         if(cursor.moveToFirst()){
             user = new UserModel(cursor.getString(0),cursor.getString(1),cursor.getString(2),
-                    cursor.getString(3),cursor.getString(4), cursor.getInt(5),cursor.getString(6));
+                    cursor.getString(3),cursor.getString(4), cursor.getInt(5),cursor.getString(6),
+                    cursor.getString(7),cursor.getDouble(8),cursor.getInt(9),cursor.getInt(10),
+                    cursor.getString(11),cursor.getString(12),new StringBuilder(cursor.getString(13)));
         }else{
-            user = new UserModel();
+            user = null;
         }
         cursor.close();
         database.close();
         return user;
     }
 
-    public ArrayList<UserModel> getUsersByBloodGroup(String bloodGroup){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<UserShortModel> getUsersByBloodGroup(String bloodGroup){
         SQLiteDatabase database = getWritableDatabase();
         Cursor cursor;
         if(bloodGroup.equals("All")){
-            cursor = database.rawQuery("select * from Users", null);
+            cursor = database.rawQuery("select uid,name,bloodGroup,lastDonationDate,numberOfDonation," +
+                    "lastContuct,profile from Users", null);
         }else {
-            cursor = database.rawQuery("select * from Users where bloodGroup='" + bloodGroup+"'", null);
+            cursor = database.rawQuery("select uid,name,bloodGroup,lastDonationDate,numberOfDonation," +
+                    "lastContuct,profile  from Users where bloodGroup='" + bloodGroup+"'", null);
         }
 
-        ArrayList<UserModel> userList;
+        ArrayList<UserShortModel> userList,unpeaperdList;
 
         if(cursor.moveToFirst()){
             userList = new ArrayList<>();
+            unpeaperdList = new ArrayList<>();
             do{
-                userList.add(new UserModel(cursor.getString(0),cursor.getString(1),cursor.getString(2),
-                        cursor.getString(3),cursor.getString(4), cursor.getInt(5),cursor.getString(6)));
+                UserShortModel shortModel = new UserShortModel(cursor.getString(0),cursor.getString(1),cursor.getString(2),
+                        cursor.getString(3),cursor.getInt(4),cursor.getString(5),cursor.getString(6));
+                if(shortModel.isPrepared()){
+                    userList.add(shortModel);
+                }else{
+                    unpeaperdList.add(shortModel);
+                }
             }while(cursor.moveToNext());
+            userList.addAll(unpeaperdList);
         }else{
             userList = null;
         }
@@ -191,55 +223,6 @@ public class MainDBHelper extends SQLiteOpenHelper {
         database.close();
         
         return userList;
-    }
-
-    public boolean insertAdditionalInfo(UserAdditionalInfo userAdditionalInfo,boolean isDownloaded){
-        SQLiteDatabase database = getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put("uid",userAdditionalInfo.getUid());
-        values.put("weight",userAdditionalInfo.getWeight());
-        values.put("height",userAdditionalInfo.getHeight());
-        values.put("studentID",userAdditionalInfo.getStudentId());
-        values.put("curAddress",userAdditionalInfo.getCurrentAddress());
-        values.put("parAddress",userAdditionalInfo.getParmanentAddress());
-        values.put("donationHistoryUID",userAdditionalInfo.getDonationHistoryUID());
-
-
-        database.delete("UserAdditionalInfo","uid="+userAdditionalInfo.getUid(),null);
-
-        long pushed = database.insert("UserAdditionalInfo",null,values);
-
-        if(pushed<=0){
-            return false;
-        }else{
-            if(!isDownloaded) {
-                myRef = firebaseDatabase.getReference().child("Datas").child("AdditionalInfo").child(userAdditionalInfo.getUid());
-                myRef.setValue(userAdditionalInfo);
-            }
-            return true;
-        }
-    }
-
-    public void deleteAdditionalInfo(String uid){
-        SQLiteDatabase database = getWritableDatabase();
-        database.delete("UserAdditionalInfo","uid="+uid,null);
-        firebaseDatabase.getReference().child("Datas").child("AdditionalInfo").child(uid).removeValue();
-    }
-
-    public UserAdditionalInfo getUserAdditionalInfoByUID(String uid){
-        SQLiteDatabase database = getWritableDatabase();
-        Cursor cursor = database.rawQuery("select * from UserAdditionalInfo where uid="+uid,null);
-        UserAdditionalInfo userAdditionalInfo;
-        if(cursor.moveToFirst()){
-            userAdditionalInfo = new UserAdditionalInfo(cursor.getString(0),cursor.getFloat(1),cursor.getInt(2),
-                    cursor.getInt(3),cursor.getString(4), cursor.getString(5),new StringBuilder(cursor.getString(6)));
-        }else{
-            userAdditionalInfo = new UserAdditionalInfo();
-        }
-        cursor.close();
-        database.close();
-        return userAdditionalInfo;
     }
 
     public void insertLoginInfo(LoginInfo loginInfo, boolean isDownloaded){
@@ -355,6 +338,12 @@ public class MainDBHelper extends SQLiteOpenHelper {
         }
         return rPostList;
     }
+    public void deleteAllPosts(){
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+
+        sqLiteDatabase.execSQL("delete from Posts");
+        sqLiteDatabase.execSQL("delete from Comments");
+    }
 
     public boolean insertComment(CommentModel commentModel, boolean isDownloaded){
         SQLiteDatabase database = getWritableDatabase();
@@ -374,8 +363,7 @@ public class MainDBHelper extends SQLiteOpenHelper {
             return false;
         }else{
             if(!isDownloaded) {
-                myRef = firebaseDatabase.getReference().child("Datas").child("Comments").child(commentModel.
-                        getPostUID()).child(commentModel.getUid());
+                myRef = firebaseDatabase.getReference().child("Datas").child("Comments").child(commentModel.getUid());
                 myRef.setValue(commentModel);
             }
             return true;
@@ -395,53 +383,77 @@ public class MainDBHelper extends SQLiteOpenHelper {
     }
 
     public CommentModel getCommentByUID(String uid){
-        SQLiteDatabase database = getWritableDatabase();
+
         if(uid.isEmpty()){
-            uid = "101";
+            return null;
         }
+        SQLiteDatabase database = getWritableDatabase();
         Cursor cursor = database.rawQuery("select * from Comments where uid="+uid,null);
         CommentModel comment;
         if(cursor.moveToFirst()){
             comment = new CommentModel(cursor.getString(0),cursor.getString(1),cursor.getString(2),
                     cursor.getString(3),cursor.getString(4));
         }else{
-            comment = new CommentModel();
+            comment = null;
         }
         cursor.close();
         database.close();
         return comment;
     }
 
-    public boolean insertDonationHistory(DonationHistoryModel donationHistory){
+    public boolean insertDonationHistory(DonationHistoryModel donationHistory, boolean isDownloaded){
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put("uid",donationHistory.getUid());
         values.put("donerUID",donationHistory.getDonerUid());
-        values.put("postUID",donationHistory.getPostUid());
+        values.put("donationDate",donationHistory.getDonationDate());
         values.put("shortDesc",donationHistory.getShortDisc());
-        values.put("online",0);
+
+        database.delete("DonationHistory","uid="+donationHistory.getUid(),null);
 
         long pushed = database.insert("DonationHistory",null,values);
 
         if(pushed<=0){
             return false;
         }else{
+            if(!isDownloaded) {
+                myRef = firebaseDatabase.getReference().child("Datas").child("DonationHistory").
+                        child(donationHistory.getUid());
+                myRef.setValue(donationHistory);
+            }
             return true;
         }
     }
 
-    public ArrayList<DonationHistoryModel> getDonationHistoryList(){
+    public void deleteHistory(String uid){
         SQLiteDatabase database = getWritableDatabase();
-        Cursor cursor = database.rawQuery("select * from DonationHistory",null);
-        ArrayList<DonationHistoryModel> historyList;
+        if(uid.isEmpty()){
+            return;
+        }
+        database.delete("DonationHistory","uid="+uid,null);
+        if(!uid.isEmpty()){
+            firebaseDatabase.getReference().child("Datas").child("DonationHistory").child(uid).removeValue();
+        }
+        Log.d(TAG,"Deleting History success : "+uid);
+    }
 
+    public ArrayList<DonationHistoryModel> getDonationHistoryList(String donerUID){
+        SQLiteDatabase database = getWritableDatabase();
+        Cursor cursor;
+        if(donerUID.equals("")) {
+            cursor = database.rawQuery("select * from DonationHistory", null);
+        }else{
+            cursor = database.rawQuery("select * from DonationHistory where donerUID="+donerUID, null);
+        }
+        ArrayList<DonationHistoryModel> historyList;
         if(cursor.moveToFirst()){
             historyList = new ArrayList<>();
-            while(cursor.moveToNext()){
+            do{
                 historyList.add(new DonationHistoryModel(cursor.getString(0),cursor.getString(1),cursor.getString(2),
                         cursor.getString(3)));
-            }
+            }while(cursor.moveToNext());
+            //Collections.sort(historyList);
         }else{
             historyList = null;
         }
@@ -449,4 +461,5 @@ public class MainDBHelper extends SQLiteOpenHelper {
         database.close();
         return historyList;
     }
+
 }

@@ -1,17 +1,17 @@
 package com.example.jonakipust.Model.DonationHistory;
 
-public class DonationHistoryModel {
+public class DonationHistoryModel implements Comparable<DonationHistoryModel>{
     private String uid;
     private String donerUid;
-    private String postUid;
+    private String donationDate;
     private String shortDisc;
 
     public DonationHistoryModel(){}
 
-    public DonationHistoryModel(String uid, String donerUid, String postUid, String shortDisc) {
+    public DonationHistoryModel(String uid, String donerUid, String donationDate, String shortDisc) {
         this.uid = uid;
         this.donerUid = donerUid;
-        this.postUid = postUid;
+        this.donationDate = donationDate;
         this.shortDisc = shortDisc;
     }
 
@@ -31,12 +31,12 @@ public class DonationHistoryModel {
         this.donerUid = donerUid;
     }
 
-    public String getPostUid() {
-        return postUid;
+    public String getDonationDate() {
+        return donationDate;
     }
 
-    public void setPostUid(String postUid) {
-        this.postUid = postUid;
+    public void setDonationDate(String donationDate) {
+        this.donationDate = donationDate;
     }
 
     public String getShortDisc() {
@@ -45,5 +45,10 @@ public class DonationHistoryModel {
 
     public void setShortDisc(String shortDisc) {
         this.shortDisc = shortDisc;
+    }
+
+    @Override
+    public int compareTo(DonationHistoryModel donationHistoryModel) {
+        return Integer.parseInt(this.uid) - Integer.parseInt(donationHistoryModel.getUid());
     }
 }

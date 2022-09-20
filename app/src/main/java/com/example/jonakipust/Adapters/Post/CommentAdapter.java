@@ -1,7 +1,10 @@
 package com.example.jonakipust.Adapters.Post;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +53,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.viewHold
         CommentModel commentModel = comments.get(position);
         MainDBHelper dbHelper = new MainDBHelper(context);
         UserModel commentWriter = dbHelper.getUserByUID(commentModel.getCommentWriterUID());
-
+        if(commentWriter == null) {
+            Log.d(TAG, "Comment adapter ----->>>> "+commentModel.getComment());
+            Log.d(TAG, "Comment adapter ----->>>> "+commentModel.getCommentWriterUID());
+            return ;
+        }
         Picasso.get().load(commentWriter.getProfile()).placeholder(R.drawable.ic_user).into(holder.comment_writer_profile);
         holder.comment_writer_name.setText(commentWriter.getName());
         holder.comment_writer_name.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +96,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.viewHold
                                         Toast.makeText(context, "Comment delete Fail.", Toast.LENGTH_SHORT).show();
                                     }
                                 }else{
-                                    Toast.makeText(context, "You have no right to delete this comment.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, "You are not owner of the comment.", Toast.LENGTH_LONG).show();
                                 }
                                 return true;
                             default:

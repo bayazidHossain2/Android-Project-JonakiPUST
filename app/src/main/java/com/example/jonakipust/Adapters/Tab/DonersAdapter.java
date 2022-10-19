@@ -54,6 +54,8 @@ public class DonersAdapter extends RecyclerView.Adapter<DonersAdapter.viewHolder
         holder.donerBloodGroup.setText(donerModel.getBloodGroup());
         if(!donerModel.isPrepared()){
             holder.donerBloodGroup.setTextColor(Color.parseColor("#56A3E3"));
+        }else{
+            holder.donerBloodGroup.setTextColor(Color.parseColor("#FF0000"));
         }
 
         holder.lastDonationDate.setText(donerModel.getLastDonationDate().split(" ")[0]);

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="#36888888"
     tools:context=".Fragments.Tab_Fragment.DonerFragment">
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"

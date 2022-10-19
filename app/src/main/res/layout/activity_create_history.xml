@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/green_background"
     tools:context=".CreateHistoryActivity">
 
     <TextView
@@ -15,6 +15,7 @@
         android:gravity="center"
         android:padding="8dp"
         android:text="Create A Donation History"
+        android:textStyle="bold"
         android:textColor="@color/bg_normal"
         android:textSize="26dp"
         app:layout_constraintEnd_toEndOf="parent"

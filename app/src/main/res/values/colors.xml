@@ -10,7 +10,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="bg_hard">#E9972603</color>
-    <color name="bg_normal">#FF5722</color>
+    <color name="bg_normal">#0D710D</color>
     <color name="bg_medium">#AF5D43</color>
     <color name="bg_toolbar">#CC6443</color>
     <color name="bg_light">#C3852203</color>
@@ -23,6 +23,7 @@
 
     <color name="green_extra_hard">#0D710D</color>
     <color name="green_hard">#048c04</color>
+    <color name="green_background">#F1F3F1</color>
     <color name="green_medium">#62B503</color>
     <color name="green_light">#abfb04</color>
     <color name="button_color">#02C566</color>

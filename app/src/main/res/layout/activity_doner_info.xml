@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/green_background"
     android:orientation="vertical"
     tools:context=".DonerInfoActivity">
     <ScrollView
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="Number of Donation : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -107,7 +107,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
                     android:text="5 time"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="Last Contact : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -134,7 +134,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
                     android:text="Never"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -151,7 +151,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="16dp"
                     android:text="Phone : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -162,9 +162,9 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
-                    android:textIsSelectable="true"
                     android:text="01704233873"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
+                    android:textIsSelectable="true"
                     android:textSize="16sp" />
 
                 <ImageButton
@@ -192,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="BMI      : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -203,7 +203,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
                     android:text="20.91"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -219,7 +219,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="Weight : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -230,7 +230,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
                     android:text="68 KG"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -246,7 +246,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="Height : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -257,7 +257,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
                     android:text="5 fit 11 inch"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -273,7 +273,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="Student ID  : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -284,7 +284,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
                     android:text="190140"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -300,7 +300,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="Cur. Address : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -312,7 +312,7 @@
                     android:layout_weight="1"
                     android:padding="8dp"
                     android:text="Homiobatic Collage more Tarminal salgariya pabna sadar pabna"
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -328,7 +328,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:text="Par. Address : "
-                    android:textColor="@color/bg_medium"
+                    android:textColor="@color/bg_normal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -340,7 +340,7 @@
                     android:layout_weight="1"
                     android:padding="8dp"
                     android:text="Shikarpur Bogura sadar Bogura."
-                    android:textColor="@color/bg_normal"
+                    android:textColor="@color/green_medium"
                     android:textSize="16sp" />
 
             </LinearLayout>

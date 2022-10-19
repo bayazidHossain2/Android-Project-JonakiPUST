@@ -1,2 +1,0 @@
-# Android-Project-JonakiPUST
-This project is based on online and offline database handle. On this project Firebase Realtime Database handle online data and SQLite database handle offline data. After one time downloaded data will store in SQLite database. For this we can access downloaded data in offline time. And if we online the data will filter and if there any change we can see in runtime. Mostly post and comments are the uses of Realtime database. 

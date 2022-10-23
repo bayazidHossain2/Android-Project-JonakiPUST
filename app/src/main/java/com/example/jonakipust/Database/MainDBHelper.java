@@ -189,6 +189,23 @@ public class MainDBHelper extends SQLiteOpenHelper {
         return user;
     }
 
+    public UserModel getUserByStudentId(int sid){
+        SQLiteDatabase database = getWritableDatabase();
+        Cursor cursor = database.rawQuery("select * from Users where studentID="+sid,null);
+        UserModel user;
+        if(cursor.moveToFirst()){
+            user = new UserModel(cursor.getString(0),cursor.getString(1),cursor.getString(2),
+                    cursor.getString(3),cursor.getString(4), cursor.getInt(5),cursor.getString(6),
+                    cursor.getString(7),cursor.getDouble(8),cursor.getInt(9),cursor.getInt(10),
+                    cursor.getString(11),cursor.getString(12),new StringBuilder(cursor.getString(13)));
+        }else{
+            user = null;
+        }
+        cursor.close();
+        database.close();
+        return user;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<UserShortModel> getUsersByBloodGroup(String bloodGroup){
         SQLiteDatabase database = getWritableDatabase();

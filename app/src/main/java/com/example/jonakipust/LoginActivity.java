@@ -53,8 +53,20 @@ public class LoginActivity extends AppCompatActivity {
             if(userModel != null){
                 UserSelf userSelf = UserSelf.getUserSelf(userModel);
                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(intent);
-                finish();
+
+                progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setTitle("Loading");
+                progressDialog.setMessage("Wait few moment to load data.");
+                progressDialog.show();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        finish();
+                        startActivity(intent);
+                    }
+                }, 3000);
+
             }else{
                 Log.d(TAG,"ID not found.");
                 SharedPreferences.Editor editor = sp.edit();

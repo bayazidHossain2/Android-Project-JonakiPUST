@@ -141,6 +141,9 @@ public class UserShortModel {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String[] cTimes = dateTimeFormatter.format(LocalDateTime.now()).split("/");
         String[] dTimes = lastDonationDate.split(" ")[0].split("/");
+        if(dTimes.length < 3){
+            return false;
+        }
         int year,cyear,month,cmonth,day,cday;
         year=Integer.parseInt(dTimes[2]);
         cyear=Integer.parseInt(cTimes[2]);

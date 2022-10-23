@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class CreateHistoryActivity extends AppCompatActivity {
-    EditText patentInfo,security;
+    EditText donerid,patentInfo,security;
     TextView helpMessage;
     Button createBTN;
     ProgressDialog progressDialog;
@@ -39,6 +39,7 @@ public class CreateHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_history);
 
+        donerid = findViewById(R.id.et_history_donar_id);
         patentInfo = findViewById(R.id.et_history_patent_info);
         security = findViewById(R.id.et_history_security_code);
         helpMessage = findViewById(R.id.tv_history_help_message);
@@ -51,10 +52,15 @@ public class CreateHistoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(FirebaseHelper.isConnected(view.getContext())) {
+                    String Id = donerid.getText().toString();
                     String info = patentInfo.getText().toString();
                     String secq = "D"+security.getText().toString();
-                    if (info.equals("")) {
-                        helpMessage.setText("Write some patent info.");
+
+                    UserModel user = dbHelper.getUserByStudentId(Integer.parseInt(Id));
+                    if(user == null){
+                        helpMessage.setText("Student id not found.");
+                    }else if (info.equals("")) {
+                        helpMessage.setText("Write something about patent.");
                     }else if(FirebaseHelper.securityCode == null){
                         helpMessage.setText("Wait few moment for download code.");
                     }else if(!secq.equals(FirebaseHelper.securityCode)){
@@ -64,12 +70,12 @@ public class CreateHistoryActivity extends AppCompatActivity {
                         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                         DonationHistoryModel model = new DonationHistoryModel(String.valueOf(Long.MAX_VALUE - new
                                 Date().getTime()),
-                                UserSelf.getUserSelf().getUserModel().getUid(),
-                                dateTimeFormatter.format(LocalDateTime.now()), info);
+                                user.getUid(),dateTimeFormatter.format(LocalDateTime.now()),
+                                info+"\n\n Added by : "+UserSelf.getUserSelf().getUserModel().getName());
                         boolean success = dbHelper.insertDonationHistory(model,false);
                         if (success) {
-                            UserSelf.getUserSelf().getUserModel().setLastDonationDate(model.getDonationDate().split(" ")[0]);
-                            dbHelper.insertUser(UserSelf.getUserSelf().getUserModel(),false);
+                            user.setLastDonationDate(model.getDonationDate().split(" ")[0]);
+                            dbHelper.insertUser(user,false);
 
                             progressDialog = new ProgressDialog(CreateHistoryActivity.this);
                             progressDialog.setTitle("Donation Creating.");

@@ -14,6 +14,6 @@
         android:title="History"/>
     <item
         android:id="@+id/nav_user"
-        android:icon="@drawable/ic_user"
-        android:title="User Id"/>
+        android:icon="@drawable/ic_nav_user"
+        android:title="User"/>
 </menu>

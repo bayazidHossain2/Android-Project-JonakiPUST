@@ -48,7 +48,7 @@ public class FirebaseHelper {
         }return false;
     }
 
-    public static void loadLoginInfo(Context context){
+    synchronized public static void loadLoginInfo(Context context){
         loginInfoDownloaded = false;
         if(dbHelper == null){
             dbHelper = new MainDBHelper(context);
@@ -91,7 +91,7 @@ public class FirebaseHelper {
 
     }
 
-    public static void loadUserInfo(Context context){
+    synchronized public static void loadUserInfo(Context context){
         if(dbHelper == null){
             dbHelper = new MainDBHelper(context);
         }

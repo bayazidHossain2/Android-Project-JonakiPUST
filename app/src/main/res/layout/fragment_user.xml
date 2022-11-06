@@ -351,7 +351,7 @@
                     android:layout_weight="1"
                     android:text="+"
                     android:gravity="center"
-                    android:textColor="@color/ygreen_normal"
+                    android:textColor="@color/green_hard"
                     android:textSize="36sp"/>
 
             </LinearLayout>

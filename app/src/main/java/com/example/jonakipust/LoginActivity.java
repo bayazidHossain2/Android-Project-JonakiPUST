@@ -36,7 +36,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        FirebaseHelper.loadUserInfo(LoginActivity.this);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseHelper.loadUserInfo(LoginActivity.this);
+            }
+        }).start();
 
         //FirebaseHelper.reset(LoginActivity.this, false);
         //FirebaseHelper.downloadAllData(LoginActivity.this);
@@ -80,7 +86,12 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         }else {
-            FirebaseHelper.loadLoginInfo(LoginActivity.this);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FirebaseHelper.loadLoginInfo(LoginActivity.this);
+                }
+            }).start();
             FirebaseHelper.getSecurityCode("Login");
             dbHelper = new MainDBHelper(LoginActivity.this);
 

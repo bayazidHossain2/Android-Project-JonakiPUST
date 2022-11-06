@@ -16,12 +16,12 @@
             android:id="@+id/tabLayout_bloodGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F7DCDCDC"
+            android:background="@color/green_hard"
             android:elevation="12dp"
-            app:tabIndicatorColor="@color/bg_hard"
+            app:tabIndicatorColor="#FFC107"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/bg_hard"
-            app:tabTextColor="@color/black">
+            app:tabSelectedTextColor="#FFC107"
+            app:tabTextColor="@color/background">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"

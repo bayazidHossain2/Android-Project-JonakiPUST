@@ -79,6 +79,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         if(!uid.equals("")){
             UserModel user = dbHelper.getUserByUID(uid);
             studentID.setText(user.getStudentId()+"");
+            studentID.setVisibility(View.INVISIBLE);
             password.setText(getSharedPreferences("Login",MODE_PRIVATE).getString("Psw",""));
             String[] purl = user.getProfile().split("=");
             profileURL.setText("https://drive.google.com/file/d/" + purl[2] + "/view?usp=sharing");
@@ -255,4 +256,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

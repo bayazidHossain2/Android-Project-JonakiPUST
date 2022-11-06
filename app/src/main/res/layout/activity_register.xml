@@ -159,7 +159,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/ygreen_light"
+                    android:background="@color/ygreen_normal"
                     android:padding="8dp" />
 
             </LinearLayout>
@@ -200,10 +200,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
-                android:background="@color/ygreen_normal"
+                android:background="@color/green_hard"
                 android:padding="8dp"
                 android:text="Additional Info : "
-                android:textColor="@color/bg_light"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="16sp" />
 
@@ -480,6 +480,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="30dp"
+                android:textColor="@color/white"
                 android:layout_marginBottom="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_button"
@@ -491,11 +492,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ygreen_normal"
+        android:background="@color/green_hard"
         android:padding="8dp"
         android:text="Register : "
         android:textStyle="bold"
-        android:textColor="@color/bg_light"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

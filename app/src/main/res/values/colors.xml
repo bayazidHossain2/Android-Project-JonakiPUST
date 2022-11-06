@@ -24,7 +24,7 @@
     <color name="green_extra_hard">#0D710D</color>
     <color name="green_hard">#048c04</color>
     <color name="green_background">#F1F3F1</color>
-    <color name="green_medium">#62B503</color>
+    <color name="green_medium">#048c04</color>
     <color name="green_light">#abfb04</color>
     <color name="button_color">#02C566</color>
 </resources>
